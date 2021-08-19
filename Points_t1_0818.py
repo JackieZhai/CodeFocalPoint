@@ -96,7 +96,7 @@ def _min_max_position(x, y, z, sk, zpad=1, xypad=50):
     return sv_min, sv_max
 
 
-def _process_branchpoints(sk, branch_dic, lock):
+def _process_branchpoints(sk, branch_dic):
     if len(branch_dic.keys()) > 0:
         if len(branch_dic.keys()) % 10000 == 0:
             print(sk, len(branch_dic.keys()))
@@ -153,13 +153,9 @@ def _process_branchpoints(sk, branch_dic, lock):
     l = len(branchpoint)
     if l > 0:
         if sk in branch_dic.keys():
-            lock.acquire()
             branch_dic[sk] += branchpoint
-            lock.release()
         else:
-            lock.acquire()
             branch_dic[sk] = branchpoint
-            lock.release()
 
 
 def _process_strangepoints(sk, strage_dic, lock):
@@ -328,12 +324,9 @@ def _branstran_post(bs, sk):
     return post
 
 
-branch_dic = Manager().dict()
-pb_lock = Manager().Lock()
-pb_partial = partial(_process_branchpoints, branch_dic=branch_dic, lock=pb_lock)
-with Pool(processes=core) as pool:
-    pool.map(pb_partial, big_skels.keys())
-    pool.close(); pool.join()
+branch_dic = {}
+for sk in tqdm(range(big_skels.keys())):
+    _process_branchpoints(sk, branch_dic)
 branch_num = 0
 for sk in branch_dic.keys():
     branch_num += len(branch_dic[sk])
