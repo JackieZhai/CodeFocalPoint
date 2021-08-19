@@ -1,0 +1,5 @@
+# the (intermediate) results
+*.pkl
+
+# some test images
+*.tif
