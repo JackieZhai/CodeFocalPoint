@@ -2,7 +2,7 @@ XXX_error_2p.pkl:
 ```
 dict(label1, label2) = [
     {'pos':[x,y,z], 'min':[x,y,z], 'max':[x,y,z], 'sample1':[x,y,z], 'sample2':[x,y,z], 'score':float}, 
-    {'pos':[x,y,z], 'min':[x,y,z], 'max':[x,y,z], 'sample1':[x,y,z], 'sample2':[x,y,z], 'score'=float}, 
+    {'pos':[x,y,z], 'min':[x,y,z], 'max':[x,y,z], 'sample1':[x,y,z], 'sample2':[x,y,z], 'score':float}, 
     ...
 ]
 ```

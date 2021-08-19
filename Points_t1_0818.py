@@ -97,10 +97,6 @@ def _min_max_position(x, y, z, sk, zpad=1, xypad=50):
 
 
 def _process_branchpoints(sk, branch_dic):
-    if len(branch_dic.keys()) > 0:
-        if len(branch_dic.keys()) % 10000 == 0:
-            print(sk, len(branch_dic.keys()))
-
     p = brve
     skves = big_skels[sk].vertices
     skeds = big_skels[sk].edges
@@ -325,7 +321,7 @@ def _branstran_post(bs, sk):
 
 
 branch_dic = {}
-for sk in tqdm(range(big_skels.keys())):
+for sk in tqdm(big_skels.keys()):
     _process_branchpoints(sk, branch_dic)
 branch_num = 0
 for sk in branch_dic.keys():
