@@ -3,3 +3,6 @@
 
 # some test images
 *.tif
+
+# some backup files
+/backups
