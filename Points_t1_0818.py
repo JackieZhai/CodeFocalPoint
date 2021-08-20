@@ -143,7 +143,7 @@ def _process_branchpoints(sk, branch_dic):
                         smax = (smax/oanis+obias).astype(np.uint32).tolist()
                         spos = np.array([x, y, z])
                         spos = (spos/oanis+obias).astype(np.uint32).tolist()
-                        branchpoint.append({'position': spos, 'min': smin, 'max': smax, 'k': k})
+                        branchpoint.append({'pos': spos, 'min': smin, 'max': smax, 'k': k})
     
     # print(sk, ':', len(branchpoint))
     l = len(branchpoint)
@@ -181,9 +181,9 @@ def _process_strangepoints(sk, strage_dic, lock):
                         spos = np.array([x, y, z])
                         spos = (spos/oanis+obias).astype(np.uint32).tolist()
                         if len(strangepoint) == 0:
-                            strangepoint.append({'position': spos, 'min': smin, 'max': smax, 'k': k})
+                            strangepoint.append({'pos': spos, 'min': smin, 'max': smax, 'k': k})
                         else:
-                            strangepoint[0] = {'position': spos, 'min': smin, 'max': smax, 'k': k}
+                            strangepoint[0] = {'pos': spos, 'min': smin, 'max': smax, 'k': k}
 
     # print(sk, ':', len(strangepoint))
     l = len(strangepoint)
@@ -364,7 +364,7 @@ for i in branstran_dic.keys():
     branstran_dic[i][0] = max(min((1.0 * (branstran_dic[i][0] - smin) / (smax - smin)), 1.0), 0)
     branstran_num += len(branstran_dic[i]) - 1
 
-pickle.dump(branstran_dic, open('divide_error_2p.pkl', 'wb'), protocol=4)
+pickle.dump(branstran_dic, open('divide_error_1p.pkl', 'wb'), protocol=4)
 o_time(s_time, 'post processing divide errors')
 
 print('--- Branch error number:', branch_num)
