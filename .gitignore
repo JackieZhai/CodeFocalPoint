@@ -6,3 +6,6 @@
 
 # some backup files
 /backups
+
+# some tests
+/tests

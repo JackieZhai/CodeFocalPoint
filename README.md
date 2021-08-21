@@ -1,3 +1,9 @@
+# FocalPoint
+
+now testing on 'wafer 14'. (by YuanJB)
+
+## data formats
+
 XXX_error_2p.pkl:
 ```
 dict[(label1, label2)] = [
@@ -17,6 +23,8 @@ dict[label] = [
 ]
 ```
 
+## data descriptions
+
 amputate_error_2p.pkl: (from ZhangYC) \
 XXX
 
@@ -28,3 +36,7 @@ XXX
 
 merge_error_1p.pkl: \
 XXX
+
+## contributions
+
+ZhaiH, LiZC, ZhangYC, YuanJB, LiuJ, HongB
