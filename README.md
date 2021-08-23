@@ -27,7 +27,7 @@ dict[label] = [
 
 amputate_error_2p.pkl: (from ZhangYC)
 1. inconsistency (...1 1 1 2 1 1 1...)
-2. isolated piece
+2. isolated piece (single layer and small enough)
 
 divide_error_1p.pkl: (from LiZC)
 1. branch point (must be long enough)
