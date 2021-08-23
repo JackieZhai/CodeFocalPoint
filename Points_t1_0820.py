@@ -37,6 +37,7 @@ anis = (10, 10, 40)
 cuts = (2000, 2000, 209)
 resz = 4
 core = 24
+chuk = 2400
 dust = 10000
 jora = 1600
 
@@ -57,11 +58,8 @@ for remap_z in range(arr_read.shape[0]):
                 continue
 
             imgs_dir = seg_dir.joinpath(stack_name).joinpath('seg.h5')
-            labels = File(imgs_dir, 'r')['data'][:].astype(np.int32)
-            for lz in range(labels.shape[2]):
-                img = labels[:, :, lz]
-                sz = img.shape
-                img = cv2.resize(img, (sz[0]//resz, sz[1]//resz), interpolation=cv2.INTER_NEAREST)
+            labels = File(imgs_dir, 'r')['data'][:]
+            labels = labels[::resz, ::resz, :]
 
             skels = kimimaro.skeletonize(
                 labels,
@@ -89,7 +87,7 @@ for remap_z in range(arr_read.shape[0]):
                 fix_avocados=False,  # default False
                 progress=False,  # default False, show progress bar
                 parallel=core,  # <= 0 all cpu, 1 single process, 2+ multiprocess
-                parallel_chunk_size=600,  # how many skeletons to process before updating progress bar
+                parallel_chunk_size=chuk,  # how many skeletons to process before updating progress bar
             )
 
             stack_pad = [remap_x * cuts[0] * anis[0], \
