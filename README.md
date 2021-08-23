@@ -25,17 +25,21 @@ dict[label] = [
 
 ## data descriptions
 
-amputate_error_2p.pkl: (from ZhangYC) \
-XXX
+amputate_error_2p.pkl: (from ZhangYC)
+1. inconsistency (...1 1 1 2 1 1 1...)
+2. isolated piece
 
-divide_error_1p.pkl: (from LiZC) \
-XXX
+divide_error_1p.pkl: (from LiZC)
+1. branch point (must be long enough)
+2. strange point (> 90 degree)
 
-split_error_2p.pkl: \
-XXX
+split_error_2p.pkl:
+1. skeleton endpoints k-neighborhood
+2. check the ending vectors
 
-merge_error_1p.pkl: \
-XXX
+merge_error_1p.pkl:
+1. skeleton points in affinity map
+2. check the dark consist areas
 
 ## contributions
 
