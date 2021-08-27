@@ -23,8 +23,8 @@ def read_binary_dat(merge):
 
         label = np.zeros((int(num_z[0]), int(num_y[0]), int(num_x[0]), 2 ** int(bite[0])), dtype=np.uint32)
 
-        arr_read = struct.unpack('{}i'.format((int(num_x[0]) * int(num_y[0]) * int(num_z[0])) * (2 ** int(bite[0]))), f.read())  # 这里unpack的第一个参数表示有多少个int类型的数据
-        arr_read = np.array(list(arr_read))
+        arr_read = struct.unpack('{}i'.format((int(num_x[0]) * int(num_y[0]) * int(num_z[0])) * (2 ** int(bite[0]))), f.read())
+        arr_read = np.array(list(arr_read), dtype=np.uint32)
         arr_read = arr_read.reshape(label.shape)
 
     # arr_message, arr_read

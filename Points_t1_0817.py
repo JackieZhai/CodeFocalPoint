@@ -35,15 +35,16 @@ root_dir = Path('/dc1/SCN/wafer14/')
 seg_dir = root_dir.joinpath('seg/')
 map_dir = root_dir.joinpath('merge.dat')
 
-anis = (10, 10, 40)
+anis = (20, 20, 40)
+resz = 2
+
 dust = 10000
-ovlp = 200
-resz = 4
 core = 24
 spld = 800
 spln = 3
 spve = 16  # vector trace length
 spra = 0.45  # 0.3216r=18.4d, 0.45r=25.8d
+
 oanis = (5, 5, 40)
 obias = (0, 8000, 0)  # should start from 01, but 03
 

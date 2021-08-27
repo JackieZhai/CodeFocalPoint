@@ -33,9 +33,10 @@ seg_dir = root_dir.joinpath('seg_after/')
 map_dir = root_dir.joinpath('merge.dat')
 
 
-anis = (10, 10, 40)
-cuts = (2000, 2000, 209)
-resz = 4
+anis = (20, 20, 40)
+cuts = (1000, 1000, 209)
+resz = 2
+
 core = 24
 chuk = 2400
 dust = 10000

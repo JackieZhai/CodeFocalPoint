@@ -34,16 +34,17 @@ aff_dir = root_dir.joinpath('affnity/')
 seg_dir = root_dir.joinpath('seg/')
 map_dir = root_dir.joinpath('merge.dat')
 
-anis = (10, 10, 40)
-cuts = (2000, 2000, 209)
+anis = (20, 20, 40)
+cuts = (1000, 1000, 209)
+resz = 2
+
 dust = 10000
-ovlp = 200
-resz = 4
 core = 24
 jora = 1600
 josk = 80
 afft = 100
 affn = 4
+
 oanis = (5, 5, 40)
 obias = (0, 8000, 0)
 
