@@ -32,13 +32,12 @@ s_time = time.time()
 
 
 root_dir = Path('/dc1/SCN/wafer14/')
-seg_dir = root_dir.joinpath('seg/')
+seg_dir = root_dir.joinpath('seg_after/')
 map_dir = root_dir.joinpath('merge.dat')
 
 anis = (20, 20, 40)
 resz = 2
 
-dust = 10000
 core = 24
 spld = 800
 spln = 3

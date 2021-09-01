@@ -31,14 +31,13 @@ s_time = time.time()
 
 root_dir = Path('/dc1/SCN/wafer14/')
 aff_dir = root_dir.joinpath('affnity/')
-seg_dir = root_dir.joinpath('seg/')
+seg_dir = root_dir.joinpath('seg_after/')
 map_dir = root_dir.joinpath('merge.dat')
 
 anis = (20, 20, 40)
 cuts = (1000, 1000, 209)
 resz = 2
 
-dust = 10000
 core = 24
 jora = 1600
 josk = 80
@@ -101,7 +100,8 @@ for remap_z in range(arr_read.shape[0]):
                     for tv in edg[sv]:
                         tn = svs[tv] - stack_pad
                         ptn = [int(tn[0]/(anis[0]*resz)), int(tn[1]/(anis[1]*resz)), int(tn[2]/anis[2])]
-                        aff_sv = affinity_in_skel(affs, psn, ptn, resz=resz)
+                        aff_sz = affs.shape[1]//(cuts[0]//resz)
+                        aff_sv = affinity_in_skel(affs, psn, ptn, resz=aff_sz)
                         all_aff_sv += aff_sv
                     avg_aff_sv = all_aff_sv / len(edg[sv])
 

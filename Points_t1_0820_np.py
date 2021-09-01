@@ -128,25 +128,15 @@ for remap_z in range(arr_read.shape[0]):
                 amputate_dic[(label1, label2)] = ans_list
 
 
-def _merge_operation(sk, big_skels, lock):
+for sk in big_skels.keys():
     if len(big_skels[sk]) == 1:
-        lock.acquire()
         big_skels[sk] = big_skels[sk][0]
-        lock.release()
     elif len(big_skels[sk]) > 1:
         merge_skel = kimimaro.join_close_components(big_skels[sk], radius=jora)
         merge_skel = kimimaro.postprocess(merge_skel, dust_threshold=0, tick_threshold=0)
-        lock.acquire()
         big_skels[sk] = merge_skel
-        lock.release()
     else:
         raise Exception
-
-big_skels = Manager().dict(big_skels)
-mo_lock = Manager().Lock()
-mo_partial = partial(_merge_operation, big_skels=big_skels, lock=mo_lock)
-with Pool(processes=core) as pool:
-    pool.map(mo_partial, big_skels.keys())
 print('Extract \'all\' skels number:', len(big_skels))
 
 pickle.dump(big_skels, open('big_skels.pkl', 'wb'), protocol=4)
