@@ -25,7 +25,7 @@ SPLIT:
     SPRA: 0.45
 
 DIVIDE:
-    TYPE: ""
+    TYPE: "branch | strange"
     BRVE: 32
     BRP1: 1.0
     BRP2: 0.75
@@ -34,7 +34,7 @@ DIVIDE:
     MARGIN: 0.025
 
 MERGE:
-    TYPE: ""
+    TYPE: "affinity"
     JOSK: 80
     AFFT: 100
     AFFN: 4
