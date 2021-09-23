@@ -4,7 +4,7 @@ import fastremap
 import numpy as np
 from tqdm import tqdm 
 
-from ..utils.compute_affinity import affinity_in_skel
+from utils.compute_affinity import affinity_in_skel
 
     
 def process_affinity_merge_check(big_merge_error, big_merge_error_sk, big_merge_error_af, affs, \
