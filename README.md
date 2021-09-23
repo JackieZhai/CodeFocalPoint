@@ -41,6 +41,10 @@ merge_error_1p.pkl:
 1. skeleton points in affinity map
 2. check the dark consist areas
 
+## config descriptions
+
+see configs/*.yaml
+
 ## contributions
 
 ZhaiH, LiZC, ZhangYC, YuanJB, LiuJ, HongB

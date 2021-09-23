@@ -7,5 +7,11 @@
 # some backup files
 /backups
 
-# some tests
+# some tests and others
 /tests
+*.idea
+*~
+*__pycache__*
+*.pyc
+*.pytest_cache
+*.ipynb_checkpoints/

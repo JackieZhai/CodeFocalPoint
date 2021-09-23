@@ -52,9 +52,6 @@ arr_msg, arr_read = read_binary_dat(map_dir)
 arr_fls = read_file_system(seg_dir)
 print('Stack property:', arr_msg)
 
-big_skels = {}  # all skels across stacks
-stack_sk = {}  # find all skels in each stack
-
 amputate_dic = {}
 
 for remap_z in range(arr_read.shape[0]):
@@ -81,25 +78,11 @@ for remap_z in range(arr_read.shape[0]):
                     ans_dic['max'] = (np.array(amp[0])*anis/oanis+obias).astype(np.uint32).tolist()
                     ans_dic['sample1'] = (np.array(amp[2])*anis/oanis+obias).astype(np.uint32).tolist()
                     ans_dic['sample2'] = (np.array(amp[3])*anis/oanis+obias).astype(np.uint32).tolist()
-                    ans_dic['score'] = (np.array(amp[5])*anis/oanis+obias).astype(np.uint32).tolist()
+                    ans_dic['score'] = amp[5]
                     ans_list.append(ans_dic)
                 label1 = skelmap[label_pair[0]]
                 label2 = skelmap[label_pair[1]]
                 amputate_dic[(label1, label2)] = ans_list
 
 
-for sk in big_skels.keys():
-    if len(big_skels[sk]) == 1:
-        big_skels[sk] = big_skels[sk][0]
-    elif len(big_skels[sk]) > 1:
-        merge_skel = kimimaro.join_close_components(big_skels[sk], radius=jora)
-        merge_skel = kimimaro.postprocess(merge_skel, dust_threshold=0, tick_threshold=0)
-        big_skels[sk] = merge_skel
-    else:
-        raise Exception
-print('Extract \'all\' skels number:', len(big_skels))
-
-pickle.dump(big_skels, open('big_skels.pkl', 'wb'), protocol=4)
-pickle.dump(stack_sk, open('stack_sk.pkl', 'wb'), protocol=4)
 pickle.dump(amputate_dic, open('amputate_error_2p.pkl', 'wb'), protocol=4)
-o_time(s_time, 'skeletonizing')

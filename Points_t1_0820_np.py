@@ -49,8 +49,6 @@ print('Stack property:', arr_msg)
 big_skels = {}  # all skels across stacks
 stack_sk = {}  # find all skels in each stack
 
-amputate_dic = {}
-
 for remap_z in range(arr_read.shape[0]):
     for remap_y in tqdm(range(arr_read.shape[1])):
         for remap_x in range(arr_read.shape[2]):
@@ -109,25 +107,6 @@ for remap_z in range(arr_read.shape[0]):
                     stack_sk[stack_name] = [skelmap[sk]]
             
 
-            amp_dir = seg_dir.joinpath(stack_name).joinpath('focus.pkl')
-            amputate_mat = pickle.load(open(amp_dir, 'rb'))
-            for label_pair in amputate_mat.keys():
-                amp_list = amputate_mat[label_pair]
-                ans_list = []
-                for amp in amp_list:
-                    ans_dic = {}
-                    ans_dic['pos'] = amp[4]
-                    ans_dic['min'] = amp[1]
-                    ans_dic['max'] = amp[0]
-                    ans_dic['sample1'] = amp[2]
-                    ans_dic['sample2'] = amp[3]
-                    ans_dic['score'] = amp[5]
-                    ans_list.append(ans_dic)
-                label1 = skelmap[label_pair[0]]
-                label2 = skelmap[label_pair[1]]
-                amputate_dic[(label1, label2)] = ans_list
-
-
 for sk in big_skels.keys():
     if len(big_skels[sk]) == 1:
         big_skels[sk] = big_skels[sk][0]
@@ -141,5 +120,4 @@ print('Extract \'all\' skels number:', len(big_skels))
 
 pickle.dump(big_skels, open('big_skels.pkl', 'wb'), protocol=4)
 pickle.dump(stack_sk, open('stack_sk.pkl', 'wb'), protocol=4)
-pickle.dump(amputate_dic, open('amputate_error_2p.pkl', 'wb'), protocol=4)
 o_time(s_time, 'skeletonizing')
