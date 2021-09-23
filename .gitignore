@@ -1,11 +1,11 @@
 # the (intermediate) results
 *.pkl
 
+# the (intermediate) codes
+*.zip
+
 # some test images
 *.tif
-
-# some backup files
-/backups
 
 # some tests and others
 /tests
