@@ -5,7 +5,8 @@ import math
 import numpy as np
 
 
-def skels_to_endpoints(endpoints, endpoints_vector, big_skels, big_edges, cfg):
+def skels_to_endpoints(big_skels, big_edges, cfg):
+    endpoints, endpoints_vector = {}, {}
     for sk in tqdm(big_skels.keys()):
         endpoints[sk] = {}
         endpoints_vector[sk] = {}
@@ -36,8 +37,11 @@ def skels_to_endpoints(endpoints, endpoints_vector, big_skels, big_edges, cfg):
                     s /= len(endpoints[sk][sv]) - 1
                     norm = math.sqrt((e[0] - s[0]) * (e[0] - s[0]) + (e[1] - s[1]) * (e[1] - s[1]) + (e[2] - s[2]) * (e[2] - s[2]))
                     endpoints_vector[sk][sv] = [(e[0] - s[0]) / norm, (e[1] - s[1]) / norm, (e[2] - s[2]) / norm]
+    return endpoints, endpoints_vector
 
-def process_endpoint_split_checking(touch_split_dic, touch_split_num, big_skels, endpoints, endpoints_vector, cfg):
+def process_endpoint_split_checking(big_skels, endpoints, endpoints_vector, cfg):
+    touch_split_dic, touch_split_num = {}, 0
+
     eps = []
     eps_sk = []
     eps_sv = []
@@ -105,3 +109,5 @@ def process_endpoint_split_checking(touch_split_dic, touch_split_num, big_skels,
                 else:
                     touch_split_dic[(sk1, sk2)] = [epdic]
                 touch_split_num += 1
+    
+    return touch_split_dic, touch_split_num

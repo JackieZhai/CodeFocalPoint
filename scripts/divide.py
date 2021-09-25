@@ -4,7 +4,7 @@ import numpy as np
 from copy import deepcopy
 import math
 from tqdm import tqdm
-from multiprocessing import Pool
+from multiprocessing import Manager, Pool
 from functools import partial
 
 
@@ -23,7 +23,9 @@ def _min_max_position(big_skels, cfg, x, y, z, sk, zpad=1, xypad=50):
     
     return sv_min, sv_max
 
-def process_branch_checking(branch_dic, branch_num, big_skels, big_edges, cfg):
+def process_branch_checking(big_skels, big_edges, cfg):
+    branch_dic, branch_num = {}, 0
+
     def _process_branchpoints(sk, branch_dic):
         p = cfg.DIVIDE.BRVE
         skves = big_skels[sk].vertices
@@ -87,9 +89,13 @@ def process_branch_checking(branch_dic, branch_num, big_skels, big_edges, cfg):
         _process_branchpoints(sk, branch_dic)
     for sk in branch_dic.keys():
         branch_num += len(branch_dic[sk])
+    
+    return branch_dic, branch_num
 
 
-def process_strange_checking(strange_dic, strange_num, ps_lock, big_skels, big_edges, cfg):
+def process_strange_checking(big_skels, big_edges, cfg):
+    strange_dic, strange_num = {}, 0
+
     def _calculate_direction(k, sk, svs):
         p = cfg.DIVIDE.BRVE
         points = []
@@ -193,15 +199,21 @@ def process_strange_checking(strange_dic, strange_num, ps_lock, big_skels, big_e
                 strage_dic[sk] = strangepoint
                 lock.release()
 
+    strange_dic = Manager().dict()
+    ps_lock = Manager().Lock()
     ps_partial = partial(_process_strangepoints, strage_dic=strange_dic, lock=ps_lock)
     with Pool(processes=cfg.CORE) as pool:
         pool.map(ps_partial, big_skels.keys())
         pool.close(); pool.join()
     for sk in strange_dic.keys():
         strange_num += len(strange_dic[sk])
+    
+    return strange_dic, strange_num
 
 
-def process_branstran_post(branstran_dic, branstran_num, branch_dic, strange_dic, big_skels, cfg):
+def process_branstran_post(branch_dic, strange_dic, big_skels, cfg):
+    branstran_dic, branstran_num = {}, 0
+
     def _branstran_post(bs, sk):
         # print(bs)
         l = len(bs)
@@ -283,3 +295,5 @@ def process_branstran_post(branstran_dic, branstran_num, branch_dic, strange_dic
     for i in branstran_dic.keys():
         branstran_dic[i][0] = max(min((1.0 * (branstran_dic[i][0] - smin) / (smax - smin)), 1.0), 0)
         branstran_num += len(branstran_dic[i]) - 1
+    
+    return branstran_dic, branstran_num

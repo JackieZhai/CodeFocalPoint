@@ -48,7 +48,7 @@ def process_skeletonize(big_skels, stack_sk, stack_name, labels, stack_pad, skel
             stack_sk[stack_name] = [skelmap[sk]]
             
 def process_skel_merging(big_skels, cfg):
-    for sk in big_skels.keys():
+    for sk in tqdm(big_skels.keys()):
         if len(big_skels[sk]) == 1:
             big_skels[sk] = big_skels[sk][0]
         elif len(big_skels[sk]) > 1:
@@ -58,7 +58,8 @@ def process_skel_merging(big_skels, cfg):
         else:
             raise Exception('Error in merging skels.')
 
-def skels_to_edges(big_skels, big_edges):
+def skels_to_edges(big_skels):
+    big_edges = {}
     for sk in tqdm(big_skels.keys()):
         ses = big_skels[sk].edges
         big_edges[sk] = {}
@@ -73,3 +74,4 @@ def skels_to_edges(big_skels, big_edges):
                 big_edges[sk][t].append(f)
             else:
                 big_edges[sk][t] = [f]
+    return big_edges

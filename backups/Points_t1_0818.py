@@ -57,8 +57,8 @@ arr_msg, arr_read = read_binary_dat(map_dir)
 arr_fls = read_file_system(seg_dir)
 print('Stack property:', arr_msg)
 
-big_skels = pickle.load(open(root_dir.joinpath('big_skels.pkl'), 'rb'))  # all skels across stacks
-stack_sk = pickle.load(open(root_dir.joinpath('stack_sk.pkl'), 'rb'))  # find all skels in each stack
+big_skels = pickle.load(open('results/big_skels.pkl', 'rb'))  # all skels across stacks
+stack_sk = pickle.load(open('results/stack_sk.pkl', 'rb'))  # find all skels in each stack
 
 big_edges = {}  # all edges across skels
 for sk in tqdm(big_skels.keys()):
