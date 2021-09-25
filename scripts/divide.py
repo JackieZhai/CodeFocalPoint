@@ -93,10 +93,7 @@ def process_branch_checking(big_skels, big_edges, cfg):
     return branch_dic, branch_num
 
 
-def process_strange_checking(big_skels, big_edges, cfg):
-    strange_dic, strange_num = {}, 0
-
-    def _calculate_direction(k, sk, svs):
+def _calculate_direction(k, sk, svs, big_edges, cfg):
         p = cfg.DIVIDE.BRVE
         points = []
         now_sv = k
@@ -154,7 +151,7 @@ def process_strange_checking(big_skels, big_edges, cfg):
 
         return np.dot(np.array(vector_a), np.array(vector_b))
 
-    def _process_strangepoints(sk, strage_dic, lock):
+def _process_strangepoints(sk, strange_dic, big_skels, big_edges, cfg, lock):
         svs = big_skels[sk].vertices
         ses = big_skels[sk].edges
         list0, list1 = ses[:, 0].tolist(), ses[:, 1].tolist()
@@ -167,7 +164,7 @@ def process_strange_checking(big_skels, big_edges, cfg):
         mindirection = math.cos(cfg.DIVIDE.STRA)  # min direction dot for strangepoint
         for k, f in nodedegree.items():
             if f == 2:
-                d = _calculate_direction(k, sk, svs)
+                d = _calculate_direction(k, sk, svs, big_edges, cfg)
                 if d < mindirection:
                     mindirection = d  # only find the worst d
                     x = int(svs[k][0])
@@ -190,18 +187,22 @@ def process_strange_checking(big_skels, big_edges, cfg):
         # print(sk, ':', len(strangepoint))
         l = len(strangepoint)
         if l > 0:
-            if sk in strage_dic.keys():
+            if sk in strange_dic.keys():
                 lock.acquire()
-                strage_dic[sk] += strangepoint
+                strange_dic[sk] += strangepoint
                 lock.release()
             else:
                 lock.acquire()
-                strage_dic[sk] = strangepoint
+                strange_dic[sk] = strangepoint
                 lock.release()
+
+def process_strange_checking(big_skels, big_edges, cfg):
+    strange_dic, strange_num = {}, 0
 
     strange_dic = Manager().dict()
     ps_lock = Manager().Lock()
-    ps_partial = partial(_process_strangepoints, strage_dic=strange_dic, lock=ps_lock)
+    ps_partial = partial(_process_strangepoints, strage_dic=strange_dic, \
+        big_skels=big_skels, big_edges=big_edges, cfg=cfg, lock=ps_lock)
     with Pool(processes=cfg.CORE) as pool:
         pool.map(ps_partial, big_skels.keys())
         pool.close(); pool.join()

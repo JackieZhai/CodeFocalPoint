@@ -40,7 +40,6 @@ def skels_to_endpoints(big_skels, big_edges, cfg):
     return endpoints, endpoints_vector
 
 def process_endpoint_split_checking(big_skels, endpoints, endpoints_vector, cfg):
-    print(cfg.SPLIT.SPOV)
     touch_split_dic, touch_split_num = {}, 0
 
     eps = []
@@ -78,34 +77,22 @@ def process_endpoint_split_checking(big_skels, endpoints, endpoints_vector, cfg)
             else:
                 e1 = ind
                 e2 = e
-            sk1 = eps_sk[e1]; sk2 = eps_sk[e2]
-            sv1 = eps_sv[e1]; sv2 = eps_sv[e2]
-            epset1, epset2 = [], []
-            for sv in endpoints[sk1][sv1]:
-                epset1.append(big_skels[sk1].vertices[sv])
-            for sv in endpoints[sk2][sv2]:
-                epset2.append(big_skels[sk2].vertices[sv])
-            zset1, zset2 = set(), set()
-            for pp in epset1:
-                zset1.add(pp[2])
-            for pp in epset2:
-                zset2.add(pp[2])
-            epset_z_iou = 1.0 * len(zset1 & zset2) / len(zset1 | zset2)
-            if epset_z_iou > cfg.SPLIT.SPOV:
-                continue
             v1 = eps_vec[e1]
             v2 = eps_vec[e2]
-            dot_z_product = (v1[2] + v2[2]) / 2
-            if dot_z_product < math.cos(cfg.SPLIT.SPPA):
-                continue
             dot_product = - (v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2])
             cos_spra = math.cos(cfg.SPLIT.SPRA)
             # if (dot_product == 0) or (dot_product >= cos_spra):
             if dot_product >= cos_spra:
+                sk1 = eps_sk[e1]; sk2 = eps_sk[e2]
+                sv1 = eps_sv[e1]; sv2 = eps_sv[e2]
                 sample1 = (eps[e1]/cfg.OANIS+cfg.OBIAS).astype(np.uint32).tolist()
                 sample2 = (eps[e2]/cfg.OANIS+cfg.OBIAS).astype(np.uint32).tolist()
                 epmean = (np.mean((eps[e1], eps[e2]), axis=0)/cfg.OANIS+cfg.OBIAS).astype(np.uint32).tolist()
-                epset = epset1 + epset2
+                epset = []
+                for sv in endpoints[sk1][sv1]:
+                    epset.append(big_skels[sk1].vertices[sv])
+                for sv in endpoints[sk2][sv2]:
+                    epset.append(big_skels[sk2].vertices[sv])
                 epset = np.vstack(epset).astype(np.float32)
                 epmax = (np.max(epset, axis=0)/cfg.OANIS+cfg.OBIAS).astype(np.uint32).tolist()
                 epmin = (np.min(epset, axis=0)/cfg.OANIS+cfg.OBIAS).astype(np.uint32).tolist()

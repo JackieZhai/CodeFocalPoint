@@ -78,6 +78,13 @@ __C.SPLIT.SPLN = 3
 # Trace pixel length in skel space to calculate the vector
 __C.SPLIT.SPVE = 32
 
+# Trace pixels overlap in z-axis should not too big
+__C.SPLIT.SPOV = 0.5
+
+# Two vectors should not parallel to x-y-plane too much  
+# (1.5r=85.94d)
+__C.SPLIT.SPPA = 1.5
+
 # Radian of two vectors seems to be merged
 # (0.3216r=18.4d, 0.45r=25.8d)
 __C.SPLIT.SPRA = 0.3216
