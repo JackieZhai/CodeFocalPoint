@@ -1,6 +1,7 @@
 import numpy as np
 import struct
 import os
+<<<<<<< HEAD
 import imageio
 
 
@@ -25,6 +26,8 @@ def read_tif_sequence(image_dir):
     print('reading over')
 
     return img
+=======
+>>>>>>> 93b4fdc756a075923c1c5385c7d131ac0f9beb70
 
 
 def read_binary_dat(merge):
