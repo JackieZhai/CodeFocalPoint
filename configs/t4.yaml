@@ -1,0 +1,48 @@
+VERSION: "FocalPoint_Points_t3"
+
+CORE: 24
+
+ANIS: [4, 4, 30]
+CUTS: [4000, 4000, 200]
+RESZ: 8
+OANIS: [4, 4, 30]
+OBIAS: [0, 0, 0]
+
+SKEL:
+    TYPE: "kimimaro"
+    CHUK: 2400
+    DUST: 342
+    JORA: 1600
+
+AMPUTATE:
+    TYPE: "inconsistent | isolated"
+
+SPLIT:
+    TYPE: "k-neighborhood & vector"
+    SPLD: 800
+    SPLN: 3
+    SPVE: 16
+    SPOV: 0.5
+    SPPA: 1.5
+    SPRA: 0.45
+
+DIVIDE:
+    TYPE: "branch | strange"
+    BRVE: 32
+    BRP1: 1.0
+    BRP2: 0.75
+    STRA: 1.58 
+    DIVD: 12
+    MARGIN: 0.025
+
+MERGE:
+    TYPE: "affinity"
+    JOSK: 80
+    AFFT: 100
+    AFFN: 4
+
+
+
+
+
+

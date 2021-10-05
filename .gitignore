@@ -1,0 +1,17 @@
+# the (intermediate) results
+*.pkl
+
+# the (intermediate) codes
+*.zip
+
+# some test images
+*.tif
+
+# some tests and others
+/tests
+*.idea
+*~
+*__pycache__*
+*.pyc
+*.pytest_cache
+*.ipynb_checkpoints/
