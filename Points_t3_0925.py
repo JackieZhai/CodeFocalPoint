@@ -110,6 +110,29 @@ pickle.dump(touch_split_dic, open(join(root_dir, 'results/split_error_2p.pkl'), 
 print('--- Split error number:', touch_split_num)
 o_time(s_time, 'split error finding')
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+# Divide
+big_edges = skels_to_edges(big_skels)
+print('Extracted \'all\' edges (2nd time).')
+branch_dic, branch_num = process_branch_checking(big_skels, big_edges, cfg)
+o_time(s_time, 'branch error finding')
+
+strange_dic, strange_num = process_strange_checking(big_skels, big_edges, cfg)
+o_time(s_time, 'strange error finding')
+del big_edges
+
+# combine branch/strange as divide errors
+branstran_dic, branstran_num = process_branstran_post(branch_dic, strange_dic, big_skels, cfg)
+
+pickle.dump(branstran_dic, open(join(root_dir, 'results/divide_error_1p.pkl'), 'wb'), protocol=4)
+print('--- Branch error number:', branch_num)
+print('--- Strange error number:', strange_num)
+print('--- Divide error number:', branstran_num)
+o_time(s_time, 'post processing divide error')
+=======
+>>>>>>> 3c9152632689c1467ece472fd20cfc9a7c6a20c3
 # # Divide
 # big_edges = skels_to_edges(big_skels)
 # print('Extracted \'all\' edges (2nd time).')
@@ -128,6 +151,10 @@ o_time(s_time, 'split error finding')
 # print('--- Strange error number:', strange_num)
 # print('--- Divide error number:', branstran_num)
 # o_time(s_time, 'post processing divide error')
+<<<<<<< HEAD
+=======
+>>>>>>> 93b4fdc756a075923c1c5385c7d131ac0f9beb70
+>>>>>>> 3c9152632689c1467ece472fd20cfc9a7c6a20c3
 
 # Merge
 big_edges = skels_to_edges(big_skels)
