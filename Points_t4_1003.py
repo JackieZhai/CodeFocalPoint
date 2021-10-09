@@ -8,6 +8,7 @@ import time
 import pickle
 import argparse
 from os.path import dirname, abspath, join
+from os import listdir
 from cloudvolume.skeleton import Skeleton
 
 from scripts.skel import process_skeletonize, process_skel_merging, skels_to_edges
@@ -16,7 +17,7 @@ from scripts.split import skels_to_endpoints, process_endpoint_split_checking
 from scripts.divide import process_branch_checking, process_strange_checking, process_branstran_post
 from scripts.merge import _components, process_merge_post
 from configs.config import cfg
-from utils.load_remap import read_binary_dat, read_file_system
+from utils.load_remap import read_binary_dat, read_tif_sequence
 from utils.compute_affinity import affinity_in_skel
 
 def o_time(s_time, note=None):
@@ -26,24 +27,27 @@ def o_time(s_time, note=None):
         print('*** Time: {:.2f} min'.format((time.time() - s_time) / 60))
 s_time = time.time()
 
-parser = argparse.ArgumentParser(description='FocalPoint_Points_t3')
+parser = argparse.ArgumentParser(description='FocalPoint_Points_t4')
 parser.add_argument('--resume', action="store_true", help='whether to load pre-computed skel results')
 args = parser.parse_args()
 
-data_dir = '/dc1/SCN/wafer14/'
-seg_dir = join(data_dir, 'seg_after')
-aff_dir = join(data_dir, 'affnity')
-map_dir = join(data_dir, 'merge.dat')
-amp_dir = None  # define below, may change
-
+data_dir = '/home/data/212/'
 root_dir = dirname(abspath(__file__))
-cfg.merge_from_file(join(root_dir, 'configs/t3.yaml'))
-cfg.OMIN = [0 * cfg.OANIS[0], 8000 * cfg.OANIS[1], 0 * cfg.OANIS[2]]
-cfg.OMAX = [(72000+400) * cfg.OANIS[0], (136000+400) * cfg.OANIS[1], 209 * cfg.OANIS[2]]
-# TODO: OMIN / OMAX should not allow
+seg_dir = join(data_dir, 'final_result_enhance_2_1_90000_multicut/')
+aff_dir = join(data_dir, 'final_result_enhance_2_1_90000/')
+amp_dir = None  # define below, may change
+map_dir = join(root_dir, 'utils/', 'merge.dat')
+cfg.merge_from_file(join(root_dir, 'configs/t4.yaml'))
 
 arr_msg, arr_read = read_binary_dat(map_dir)
-arr_fls = read_file_system(seg_dir)
+cfg.CUTS = [int(arr_msg[9]-arr_msg[6]), int(arr_msg[8]-arr_msg[5]), int(arr_msg[7]-arr_msg[4])]
+cfg.OMIN = [0 * cfg.OANIS[0], 0 * cfg.OANIS[1], 0 * cfg.OANIS[2]]
+cfg.OMAX = [
+    int(arr_msg[3] * (arr_msg[9]-arr_msg[6]) + arr_msg[6]) * cfg.OANIS[0], 
+    int(arr_msg[2] * (arr_msg[8]-arr_msg[5]) + arr_msg[5]) * cfg.OANIS[1], 
+    int(arr_msg[1] * (arr_msg[7]-arr_msg[4]) + arr_msg[4]) * cfg.OANIS[2]
+]
+# TODO: OMIN / OMAX should not allow
 print('Stack property:', arr_msg)
 
 big_skels = {}  # all skels across stacks
@@ -53,9 +57,13 @@ amputate_dic = {}
 for remap_z in range(arr_read.shape[0]):
     for remap_y in tqdm(range(arr_read.shape[1])):
         for remap_x in range(arr_read.shape[2]):
-            stack_name = arr_fls[remap_z][remap_y][remap_x]
-            if len(stack_name) != 4:
-                continue
+            stack_name = '{:05d}-{:05d}_{:01d}_{:01d}_multicut'.format(
+                10018 + (arr_msg[7]-arr_msg[4]) * remap_z,
+                10018 + (arr_msg[7]-arr_msg[4]) * remap_z + arr_msg[7] - 1,
+                remap_y + 1, 
+                remap_x + 1
+            )
+            assert stack_name in listdir(seg_dir)
 
             stack_pad = [remap_x * cfg.CUTS[0] * cfg.ANIS[0], \
                 remap_y * cfg.CUTS[1] * cfg.ANIS[1], \
@@ -64,18 +72,20 @@ for remap_z in range(arr_read.shape[0]):
 
             # Skeleton
             if not args.resume:
-                imgs_dir = join(seg_dir, stack_name, 'seg.h5')
-                labels = File(imgs_dir, 'r')['data'][:]
+                # imgs_dir = join(seg_dir, stack_name, 'seg.h5')
+                # labels = File(imgs_dir, 'r')['data'][:]
+                labels = read_tif_sequence(join(seg_dir, stack_name))
+                labels = np.transpose(labels, (2, 1, 0))
                 labels = labels[::cfg.RESZ, ::cfg.RESZ, :]
                 process_skeletonize(big_skels, stack_sk, stack_name, labels, stack_pad, skelmap, cfg)            
             
             # Amputate
-            amp_dir = join(seg_dir, stack_name, 'focus.pkl')
-            amputate_mat = pickle.load(open(amp_dir, 'rb'))
-            process_amputate_conversion(amputate_dic, amputate_mat, skelmap, cfg)
+            # amp_dir = join(seg_dir, stack_name, 'focus.pkl')
+            # amputate_mat = pickle.load(open(amp_dir, 'rb'))
+            # process_amputate_conversion(amputate_dic, amputate_mat, skelmap, cfg)
 
-pickle.dump(amputate_dic, open(join(root_dir, 'results/amputate_error_2p.pkl'), 'wb'), protocol=4)
-print('--- Amputate error number:', len(amputate_dic.keys()))
+# pickle.dump(amputate_dic, open(join(root_dir, 'results/amputate_error_2p.pkl'), 'wb'), protocol=4)
+# print('--- Amputate error number:', len(amputate_dic.keys()))
 if not args.resume:
     process_skel_merging(big_skels, cfg)
     pickle.dump(big_skels, open(join(root_dir, 'results/big_skels.pkl'), 'wb'), protocol=4)
@@ -87,9 +97,9 @@ else:
     print('Loaded \'all\' skels number:', len(big_skels))
 o_time(s_time, 'skeletonizing & amputate error finding')
 
-# # all edges across skels
-# big_edges = skels_to_edges(big_skels)
-# print('Extracted \'all\' edges (1st time).')
+# all edges across skels
+big_edges = skels_to_edges(big_skels)
+print('Extracted \'all\' edges (1st time).')
 
 # endpoint and its backtracking set
 if not args.resume:
@@ -101,7 +111,7 @@ else:
     endpoints = pickle.load(open(join(root_dir, 'results/endpoints.pkl'), 'rb'))
     endpoints_vector = pickle.load(open(join(root_dir, 'results/endpoints_vector.pkl'), 'rb'))
     print('Loaded \'all\' endpoints and corresponding vectors.')
-# del big_edges
+del big_edges
 
 # Split
 touch_split_dic, touch_split_num = process_endpoint_split_checking(big_skels, endpoints, endpoints_vector, cfg)

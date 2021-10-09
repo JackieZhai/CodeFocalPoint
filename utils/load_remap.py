@@ -1,6 +1,30 @@
 import numpy as np
 import struct
 import os
+import imageio
+
+
+def read_tif_sequence(image_dir):
+    test_data_path = os.path.join(image_dir)
+    images = os.listdir(test_data_path)
+    images.sort(key=lambda x: int(x.split('.')[0]))  ##sort
+    total = int(len(images))  # total应该是整数才对
+
+    image_name = image_dir + '/' + images[0]  # image_type
+    image_temp = imageio.imread(image_name)
+    size_y = image_temp.shape[0]
+    size_x = image_temp.shape[1]
+    img = np.zeros((total, size_y, size_x), dtype=image_temp.dtype)
+    del image_temp
+
+    for i, filename in enumerate(images):
+        image_name = image_dir + '/' + str(filename)  # image_type
+        image_temp = imageio.imread(image_name)
+        img[i] = image_temp
+
+    print('reading over')
+
+    return img
 
 
 def read_binary_dat(merge):
