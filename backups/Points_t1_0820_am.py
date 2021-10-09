@@ -53,6 +53,7 @@ arr_fls = read_file_system(seg_dir)
 print('Stack property:', arr_msg)
 
 amputate_dic = {}
+temp = np.array([0, 0, 0], dtype=np.uint32)
 
 for remap_z in range(arr_read.shape[0]):
     for remap_y in tqdm(range(arr_read.shape[1])):
@@ -73,16 +74,18 @@ for remap_z in range(arr_read.shape[0]):
                 ans_list = []
                 for amp in amp_list:
                     ans_dic = {}
-                    ans_dic['pos'] = (np.array(amp[4])*anis/oanis+obias).astype(np.uint32).tolist()
-                    ans_dic['min'] = (np.array(amp[1])*anis/oanis+obias).astype(np.uint32).tolist()
-                    ans_dic['max'] = (np.array(amp[0])*anis/oanis+obias).astype(np.uint32).tolist()
-                    ans_dic['sample1'] = (np.array(amp[2])*anis/oanis+obias).astype(np.uint32).tolist()
-                    ans_dic['sample2'] = (np.array(amp[3])*anis/oanis+obias).astype(np.uint32).tolist()
+                    temp = np.vstack([temp, ((np.array(amp[4])*anis+stack_pad)/oanis+obias).astype(np.uint32)])
+                    temp = np.max(temp, axis=0)
+                    ans_dic['pos'] = ((np.array(amp[4])*anis+stack_pad)/oanis+obias).astype(np.uint32).tolist()
+                    ans_dic['min'] = ((np.array(amp[1])*anis+stack_pad)/oanis+obias).astype(np.uint32).tolist()
+                    ans_dic['max'] = ((np.array(amp[0])*anis+stack_pad)/oanis+obias).astype(np.uint32).tolist()
+                    ans_dic['sample1'] = ((np.array(amp[2])*anis+stack_pad)/oanis+obias).astype(np.uint32).tolist()
+                    ans_dic['sample2'] = ((np.array(amp[3])*anis+stack_pad)/oanis+obias).astype(np.uint32).tolist()
                     ans_dic['score'] = amp[5]
                     ans_list.append(ans_dic)
                 label1 = skelmap[label_pair[0]]
                 label2 = skelmap[label_pair[1]]
                 amputate_dic[(label1, label2)] = ans_list
 
-
+print(temp)
 pickle.dump(amputate_dic, open('amputate_error_2p.pkl', 'wb'), protocol=4)
