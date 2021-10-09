@@ -1,5 +1,6 @@
 '''
 t3: the split error checking process need to be improved.
+improved idea from YuanJB, see "split.py".
 '''
 import numpy as np
 from h5py import File
@@ -87,9 +88,9 @@ else:
     print('Loaded \'all\' skels number:', len(big_skels))
 o_time(s_time, 'skeletonizing & amputate error finding')
 
-# # all edges across skels
-# big_edges = skels_to_edges(big_skels)
-# print('Extracted \'all\' edges (1st time).')
+# all edges across skels
+big_edges = skels_to_edges(big_skels)
+print('Extracted \'all\' edges (1st time).')
 
 # endpoint and its backtracking set
 if not args.resume:
@@ -101,7 +102,7 @@ else:
     endpoints = pickle.load(open(join(root_dir, 'results/endpoints.pkl'), 'rb'))
     endpoints_vector = pickle.load(open(join(root_dir, 'results/endpoints_vector.pkl'), 'rb'))
     print('Loaded \'all\' endpoints and corresponding vectors.')
-# del big_edges
+del big_edges
 
 # Split
 touch_split_dic, touch_split_num = process_endpoint_split_checking(big_skels, endpoints, endpoints_vector, cfg)

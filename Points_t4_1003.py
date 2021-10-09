@@ -1,5 +1,5 @@
 '''
-t3: the split error checking process need to be improved.
+t4: the operate version for Zebrafish LC Area.
 '''
 import numpy as np
 from h5py import File
