@@ -85,14 +85,14 @@ def process_endpoint_split_checking(big_skels, endpoints, endpoints_vector, cfg)
                 epset1.append(big_skels[sk1].vertices[sv])
             for sv in endpoints[sk2][sv2]:
                 epset2.append(big_skels[sk2].vertices[sv])
-            zset1, zset2 = set(), set()
-            for pp in epset1:
-                zset1.add(pp[2])
-            for pp in epset2:
-                zset2.add(pp[2])
-            epset_z_iou = 1.0 * len(zset1 & zset2) / len(zset1 | zset2)
-            if epset_z_iou > cfg.SPLIT.SPOV:
-                continue
+            # zset1, zset2 = set(), set()
+            # for pp in epset1:
+            #     zset1.add(pp[2])
+            # for pp in epset2:
+            #     zset2.add(pp[2])
+            # epset_z_iou = 1.0 * len(zset1 & zset2) / len(zset1 | zset2)
+            # if epset_z_iou > cfg.SPLIT.XXX:
+            #     continue
             v1 = eps_vec[e1]
             v2 = eps_vec[e2]
             dot_z_product = (v1[2] + v2[2]) / 2
@@ -118,6 +118,25 @@ def process_endpoint_split_checking(big_skels, endpoints, endpoints_vector, cfg)
                 epdic['sample2'] = sample2
                 epdic['score'] = epscore
                 if (sk1, sk2) in touch_split_dic.keys():
+                    eepiouf = False
+                    for eepdic in touch_split_dic[(sk1, sk2)]:
+                        epminmin = np.min(np.array([epdic['min'], eepdic['min']]), axis=0).tolist()
+                        epminmax = np.max(np.array([epdic['min'], eepdic['min']]), axis=0).tolist()
+                        epmaxmin = np.min(np.array([epdic['max'], eepdic['max']]), axis=0).tolist()
+                        epmaxmax = np.max(np.array([epdic['max'], eepdic['max']]), axis=0).tolist()
+                        if epminmax[0] >= epmaxmin[0] or \
+                            epminmax[1] >= epmaxmin[1] or \
+                            epminmax[2] >= epmaxmin[2]:
+                            eepiou = 0.00
+                        else:
+                            eepiou = 1.0 * ((epmaxmin[0]-epminmax[0]) * (epmaxmin[1]-epminmax[1]) * \
+                                (epmaxmin[1]-epminmax[1])) / ((epmaxmax[0]-epminmin[0]) * \
+                                (epmaxmax[1]-epminmin[1]) * (epmaxmax[2]-epminmin[2]))
+                        if eepiou > cfg.SPLIT.SPOV:
+                            eepiouf = True
+                            break
+                    if eepiouf:
+                        continue
                     touch_split_dic[(sk1, sk2)].append(epdic)
                 else:
                     touch_split_dic[(sk1, sk2)] = [epdic]
