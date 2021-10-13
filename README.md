@@ -2,6 +2,8 @@
 
 now testing on 'wafer 14'. (by YuanJB)
 
+also testing on 'scn stacks' and 'zebrafish lc area'.
+
 ## data formats
 
 XXX_error_2p.pkl:
