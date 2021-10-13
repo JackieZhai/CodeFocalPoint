@@ -1,5 +1,6 @@
 '''
 t4: the operate version for Zebrafish LC Area.
+Now, without amputate and merge.
 '''
 import numpy as np
 from h5py import File
@@ -31,7 +32,7 @@ parser = argparse.ArgumentParser(description='FocalPoint_Points_t4')
 parser.add_argument('--resume', action="store_true", help='whether to load pre-computed skel results')
 args = parser.parse_args()
 
-data_dir = '/home/data/212/'
+data_dir = '/data1/share/yuanjb/zebrafish/zebrafish-label-1583/'
 root_dir = dirname(abspath(__file__))
 seg_dir = join(data_dir, 'final_result_enhance_2_1_90000_multicut/')
 aff_dir = join(data_dir, 'final_result_enhance_2_1_90000/')
@@ -139,84 +140,84 @@ print('--- Strange error number:', strange_num)
 print('--- Divide error number:', branstran_num)
 o_time(s_time, 'post processing divide error')
 
-# Merge
-big_edges = skels_to_edges(big_skels)
-print('Extracted \'all\' edges (3rd time).')
-big_merge_error = None
-big_merge_error_sk = None  # corresponding skel number
-big_merge_error_af = None  # corresponding affinity
-for remap_z in range(arr_read.shape[0]):
-    for remap_y in tqdm(range(arr_read.shape[1])):
-        for remap_x in range(arr_read.shape[2]):
-            stack_name = arr_fls[remap_z][remap_y][remap_x]
-            if len(stack_name) != 4:
-                continue
-            aff_name = 'elastic_' + stack_name + '.h5'
-            affs = File(join(aff_dir, aff_name), 'r')['vol0'][:]
-            affs = np.transpose(affs, (0, 3, 2, 1))
-            stack_pad = [remap_x * cfg.CUTS[0] * cfg.ANIS[0], \
-                        remap_y * cfg.CUTS[1] * cfg.ANIS[1], \
-                        remap_z * cfg.CUTS[2] * cfg.ANIS[2]]
+# # Merge
+# big_edges = skels_to_edges(big_skels)
+# print('Extracted \'all\' edges (3rd time).')
+# big_merge_error = None
+# big_merge_error_sk = None  # corresponding skel number
+# big_merge_error_af = None  # corresponding affinity
+# for remap_z in range(arr_read.shape[0]):
+#     for remap_y in tqdm(range(arr_read.shape[1])):
+#         for remap_x in range(arr_read.shape[2]):
+#             stack_name = arr_fls[remap_z][remap_y][remap_x]
+#             if len(stack_name) != 4:
+#                 continue
+#             aff_name = 'elastic_' + stack_name + '.h5'
+#             affs = File(join(aff_dir, aff_name), 'r')['vol0'][:]
+#             affs = np.transpose(affs, (0, 3, 2, 1))
+#             stack_pad = [remap_x * cfg.CUTS[0] * cfg.ANIS[0], \
+#                         remap_y * cfg.CUTS[1] * cfg.ANIS[1], \
+#                         remap_z * cfg.CUTS[2] * cfg.ANIS[2]]
             
-            for sk in stack_sk[stack_name]:
-                svs = big_skels[sk].vertices
-                edg = big_edges[sk]
-                mesv = []
-                mesa = []  # corresponding affinity
-                mese = []
-                for sv in range(svs.shape[0]):
-                    sn = svs[sv] - stack_pad
-                    psn = [int(sn[0]/(cfg.ANIS[0]*cfg.RESZ)), int(sn[1]/(cfg.ANIS[1]*cfg.RESZ)), int(sn[2]/cfg.ANIS[2])]
-                    all_aff_sv = 0
-                    for tv in edg[sv]:
-                        tn = svs[tv] - stack_pad
-                        ptn = [int(tn[0]/(cfg.ANIS[0]*cfg.RESZ)), int(tn[1]/(cfg.ANIS[1]*cfg.RESZ)), int(tn[2]/cfg.ANIS[2])]
-                        aff_sz = affs.shape[1]//(cfg.CUTS[0]//cfg.RESZ)
-                        aff_sv = affinity_in_skel(affs, psn, ptn, resz=aff_sz)
-                        all_aff_sv += aff_sv
-                    avg_aff_sv = all_aff_sv / len(edg[sv])
+#             for sk in stack_sk[stack_name]:
+#                 svs = big_skels[sk].vertices
+#                 edg = big_edges[sk]
+#                 mesv = []
+#                 mesa = []  # corresponding affinity
+#                 mese = []
+#                 for sv in range(svs.shape[0]):
+#                     sn = svs[sv] - stack_pad
+#                     psn = [int(sn[0]/(cfg.ANIS[0]*cfg.RESZ)), int(sn[1]/(cfg.ANIS[1]*cfg.RESZ)), int(sn[2]/cfg.ANIS[2])]
+#                     all_aff_sv = 0
+#                     for tv in edg[sv]:
+#                         tn = svs[tv] - stack_pad
+#                         ptn = [int(tn[0]/(cfg.ANIS[0]*cfg.RESZ)), int(tn[1]/(cfg.ANIS[1]*cfg.RESZ)), int(tn[2]/cfg.ANIS[2])]
+#                         aff_sz = affs.shape[1]//(cfg.CUTS[0]//cfg.RESZ)
+#                         aff_sv = affinity_in_skel(affs, psn, ptn, resz=aff_sz)
+#                         all_aff_sv += aff_sv
+#                     avg_aff_sv = all_aff_sv / len(edg[sv])
 
-                    if 0 < avg_aff_sv < cfg.MERGE.AFFT:
-                        mesv.append(svs[sv])
-                        mesa.append(avg_aff_sv)
-                        messz = len(mesv)
-                        if big_merge_error is None:
-                            bigsz = 0
-                        else:
-                            bigsz = len(big_merge_error.vertices)
-                        if messz > 1 and \
-                            (abs(mesv[messz-2][0]-mesv[messz-1][0]) ** 2 + \
-                            abs(mesv[messz-2][1]-mesv[messz-1][1]) ** 2 + \
-                            abs(mesv[messz-2][2]-mesv[messz-1][2]) ** 2) < (cfg.MERGE.JOSK ** 2):
-                            mese.append(np.array([messz-2+bigsz, messz-1+bigsz]))
-                if len(mesv) > 1 and len(mese) > 0:
-                    mesv = np.vstack(mesv).astype(np.float32)
-                    mese = np.vstack(mese).astype(np.uint32)
-                    mesr = (np.max([cfg.ANIS[0]*cfg.RESZ, cfg.ANIS[1]*cfg.RESZ, cfg.ANIS[2]]) * \
-                        np.ones(mesv.shape)).astype(np.float32)
-                    mest = np.zeros(mesv.shape, dtype=np.uint8)
-                    if big_merge_error is None:
-                        big_merge_error = Skeleton(vertices=mesv, \
-                        edges=mese, radii=mesr, vertex_types=mest, segid=1)  # default segid = 1 for merge error
-                        big_merge_error_af = mesa
-                        big_merge_error_sk = [sk for i in range(len(mesa))]
-                    else:
-                        big_merge_error.vertices = np.concatenate([big_merge_error.vertices, mesv])
-                        big_merge_error.edges = np.concatenate([big_merge_error.edges, mese])
-                        big_merge_error.radii = np.concatenate([big_merge_error.radii, mesr])  
-                        big_merge_error.vertex_types = np.concatenate([big_merge_error.vertex_types, mest])
-                        big_merge_error_af += mesa
-                        big_merge_error_sk += [sk for i in range(len(mesa))]
+#                     if 0 < avg_aff_sv < cfg.MERGE.AFFT:
+#                         mesv.append(svs[sv])
+#                         mesa.append(avg_aff_sv)
+#                         messz = len(mesv)
+#                         if big_merge_error is None:
+#                             bigsz = 0
+#                         else:
+#                             bigsz = len(big_merge_error.vertices)
+#                         if messz > 1 and \
+#                             (abs(mesv[messz-2][0]-mesv[messz-1][0]) ** 2 + \
+#                             abs(mesv[messz-2][1]-mesv[messz-1][1]) ** 2 + \
+#                             abs(mesv[messz-2][2]-mesv[messz-1][2]) ** 2) < (cfg.MERGE.JOSK ** 2):
+#                             mese.append(np.array([messz-2+bigsz, messz-1+bigsz]))
+#                 if len(mesv) > 1 and len(mese) > 0:
+#                     mesv = np.vstack(mesv).astype(np.float32)
+#                     mese = np.vstack(mese).astype(np.uint32)
+#                     mesr = (np.max([cfg.ANIS[0]*cfg.RESZ, cfg.ANIS[1]*cfg.RESZ, cfg.ANIS[2]]) * \
+#                         np.ones(mesv.shape)).astype(np.float32)
+#                     mest = np.zeros(mesv.shape, dtype=np.uint8)
+#                     if big_merge_error is None:
+#                         big_merge_error = Skeleton(vertices=mesv, \
+#                         edges=mese, radii=mesr, vertex_types=mest, segid=1)  # default segid = 1 for merge error
+#                         big_merge_error_af = mesa
+#                         big_merge_error_sk = [sk for i in range(len(mesa))]
+#                     else:
+#                         big_merge_error.vertices = np.concatenate([big_merge_error.vertices, mesv])
+#                         big_merge_error.edges = np.concatenate([big_merge_error.edges, mese])
+#                         big_merge_error.radii = np.concatenate([big_merge_error.radii, mesr])  
+#                         big_merge_error.vertex_types = np.concatenate([big_merge_error.vertex_types, mest])
+#                         big_merge_error_af += mesa
+#                         big_merge_error_sk += [sk for i in range(len(mesa))]
 
-print('Maped all affinities.')
-del big_edges
+# print('Maped all affinities.')
+# del big_edges
 
-big_merge_error_af = np.array(big_merge_error_af, dtype=np.float32)
-big_merge_error_sk = np.array(big_merge_error_sk, dtype=np.uint32)
+# big_merge_error_af = np.array(big_merge_error_af, dtype=np.float32)
+# big_merge_error_sk = np.array(big_merge_error_sk, dtype=np.uint32)
 
-pmes, pafs, psks = _components(big_merge_error, big_merge_error_af, big_merge_error_sk)
-touch_merge_dic = process_merge_post(pmes, pafs, psks, cfg)
+# pmes, pafs, psks = _components(big_merge_error, big_merge_error_af, big_merge_error_sk)
+# touch_merge_dic = process_merge_post(pmes, pafs, psks, cfg)
 
-pickle.dump(touch_merge_dic, open(join(root_dir, 'results/merge_error_1p.pkl'), 'wb'), protocol=4)
-print('--- Merge error number:', len(touch_merge_dic.keys()))    
-o_time(s_time, 'merge error finding')
+# pickle.dump(touch_merge_dic, open(join(root_dir, 'results/merge_error_1p.pkl'), 'wb'), protocol=4)
+# print('--- Merge error number:', len(touch_merge_dic.keys()))    
+# o_time(s_time, 'merge error finding')
