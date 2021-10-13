@@ -40,7 +40,6 @@ def skels_to_endpoints(big_skels, big_edges, cfg):
     return endpoints, endpoints_vector
 
 def process_endpoint_split_checking(big_skels, endpoints, endpoints_vector, cfg):
-    print(cfg.SPLIT.SPOV)
     touch_split_dic, touch_split_num = {}, 0
 
     eps = []
@@ -95,8 +94,9 @@ def process_endpoint_split_checking(big_skels, endpoints, endpoints_vector, cfg)
             #     continue
             v1 = eps_vec[e1]
             v2 = eps_vec[e2]
-            dot_z_product = (v1[2] + v2[2]) / 2
-            if dot_z_product < math.cos(cfg.SPLIT.SPPA):
+            dot_z_product = [v1[2], v2[2]]
+            if dot_z_product[0] < math.cos(cfg.SPLIT.SPPA) and \
+                dot_z_product[1] < math.cos(cfg.SPLIT.SPPA):
                 continue
             dot_product = - (v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2])
             cos_spra = math.cos(cfg.SPLIT.SPRA)
