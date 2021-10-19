@@ -22,8 +22,6 @@ def read_tif_sequence(image_dir):
         image_temp = imageio.imread(image_name)
         img[i] = image_temp
 
-    print('reading over')
-
     return img
 
 
