@@ -124,9 +124,9 @@ def process_endpoint_split_checking(big_skels, endpoints, endpoints_vector, cfg)
                         epminmax = np.max(np.array([epdic['min'], eepdic['min']]), axis=0).tolist()
                         epmaxmin = np.min(np.array([epdic['max'], eepdic['max']]), axis=0).tolist()
                         epmaxmax = np.max(np.array([epdic['max'], eepdic['max']]), axis=0).tolist()
-                        if epminmax[0] >= epmaxmin[0] or \
-                            epminmax[1] >= epmaxmin[1] or \
-                            epminmax[2] >= epmaxmin[2]:
+                        if epminmax[0] > epmaxmin[0] or \
+                            epminmax[1] > epmaxmin[1] or \
+                            epminmax[2] > epmaxmin[2]:
                             eepiou = 0.00
                         else:
                             eepiou = 1.0 * ((epmaxmin[0]-epminmax[0]) * (epmaxmin[1]-epminmax[1]) * \
