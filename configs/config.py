@@ -78,9 +78,6 @@ __C.SPLIT.SPLN = 3
 # Trace pixel length in skel space to calculate the vector
 __C.SPLIT.SPVE = 32
 
-# Trace pixels overlap in z-axis should not too big
-__C.SPLIT.SPOV = 0.5
-
 # Two vectors should not parallel to x-y-plane too much  
 # (1.5r=85.94d)
 __C.SPLIT.SPPA = 1.5
@@ -88,6 +85,9 @@ __C.SPLIT.SPPA = 1.5
 # Radian of two vectors seems to be merged
 # (0.3216r=18.4d, 0.45r=25.8d)
 __C.SPLIT.SPRA = 0.3216
+
+# Trace pixels overlap in z-axis should not too big
+__C.SPLIT.SPOV = 0.5
 
 __C.SPLIT.KWARGS = CN(new_allowed=True)
 
@@ -129,13 +129,13 @@ __C.MERGE = CN()
 # Merge description
 __C.MERGE.TYPE = 'Default description'
 
-# Merge description
+# Near weak aff points-pair need to be joined
 __C.MERGE.JOSK = 80
 
-# Merge description
+# The intensity threshold to be defined as weak aff points
 __C.MERGE.AFFT = 100
 
-# Merge description
+# The member number of groups threshold to be defined as weak aff group
 __C.MERGE.AFFN = 4
 
 __C.MERGE.KWARGS = CN(new_allowed=True)

@@ -18,9 +18,11 @@ def _components(skels, af, sk):
     forest = skels._compute_components(skel)
     
     if len(forest) == 0:
-      return []
+      raise AssertionError
+      # return []
     elif len(forest) == 1:
-      return [ skel ]
+      raise AssertionError
+      # return [ skel ]
 
     skeletons = []
     afs = []
@@ -46,7 +48,7 @@ def _components(skels, af, sk):
 
     return skeletons, afs, sks
 
-def process_merge_post(touch_merge_dic, pmes, pafs, psks, cfg):
+def process_merge_post(pmes, pafs, psks, cfg):
     touch_merge_dic = {}
 
     for p in tqdm(range(len(pmes))):

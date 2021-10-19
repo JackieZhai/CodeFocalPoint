@@ -74,13 +74,13 @@ for remap_z in range(arr_read.shape[0]):
                 ans_list = []
                 for amp in amp_list:
                     ans_dic = {}
-                    temp = np.vstack([temp, ((np.array(amp[4])*anis+stack_pad)/oanis+obias).astype(np.uint32)])
+                    temp = np.vstack([temp, ((np.array(amp[4])*anis/4+stack_pad)/oanis+obias).astype(np.uint32)])
                     temp = np.max(temp, axis=0)
-                    ans_dic['pos'] = ((np.array(amp[4])*anis+stack_pad)/oanis+obias).astype(np.uint32).tolist()
-                    ans_dic['min'] = ((np.array(amp[1])*anis+stack_pad)/oanis+obias).astype(np.uint32).tolist()
-                    ans_dic['max'] = ((np.array(amp[0])*anis+stack_pad)/oanis+obias).astype(np.uint32).tolist()
-                    ans_dic['sample1'] = ((np.array(amp[2])*anis+stack_pad)/oanis+obias).astype(np.uint32).tolist()
-                    ans_dic['sample2'] = ((np.array(amp[3])*anis+stack_pad)/oanis+obias).astype(np.uint32).tolist()
+                    ans_dic['pos'] = ((np.array(amp[4])*anis/4+stack_pad)/oanis+obias).astype(np.uint32).tolist()
+                    ans_dic['min'] = ((np.array(amp[1])*anis/4+stack_pad)/oanis+obias).astype(np.uint32).tolist()
+                    ans_dic['max'] = ((np.array(amp[0])*anis/4+stack_pad)/oanis+obias).astype(np.uint32).tolist()
+                    ans_dic['sample1'] = ((np.array(amp[2])*anis/4+stack_pad)/oanis+obias).astype(np.uint32).tolist()
+                    ans_dic['sample2'] = ((np.array(amp[3])*anis/4+stack_pad)/oanis+obias).astype(np.uint32).tolist()
                     ans_dic['score'] = amp[5]
                     ans_list.append(ans_dic)
                 label1 = skelmap[label_pair[0]]

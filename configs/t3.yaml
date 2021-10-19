@@ -22,9 +22,9 @@ SPLIT:
     SPLD: 800
     SPLN: 3
     SPVE: 16
-    SPOV: 0.5
     SPPA: 1.5
     SPRA: 0.45
+    SPOV: 0.9
 
 DIVIDE:
     TYPE: "branch | strange"
