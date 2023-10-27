@@ -1,6 +1,6 @@
 # FocalPoint
 
-now testing on 'wafer 14'. (by YuanJB)
+now testing on 'wafer 14'. (by Jingbin Yuan)
 
 also testing on 'scn stacks' and 'zebrafish lc area'.
 
