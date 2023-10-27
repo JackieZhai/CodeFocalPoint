@@ -27,11 +27,11 @@ dict[label] = [
 
 ## data descriptions
 
-amputate_error_2p.pkl: (from ZhangYC)
+amputate_error_2p.pkl: (from Yanchao Zhang)
 1. inconsistency (...1 1 1 2 1 1 1...)
 2. isolated piece (single layer and small enough)
 
-divide_error_1p.pkl: (from LiZC)
+divide_error_1p.pkl: (from Zhenchen Li)
 1. branch point (must be long enough)
 2. strange point (> 90 degree)
 
@@ -49,4 +49,9 @@ see configs/*.yaml
 
 ## contributions
 
-ZhaiH, LiZC, ZhangYC, YuanJB, LiuJ, HongB
+* [Hao Zhai](https://github.com/JackieZhai)
+* Zhenchen Li
+* [Yanchao Zhang](https://github.com/Cristand)
+* Jingbin Yuan
+* Jing Liu
+* Bei Hong
